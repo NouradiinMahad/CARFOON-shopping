@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="so" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARFOON Shop Control Panel</title>
+    <meta name="description" content="Front-end dashboard interface for the CARFOON Online Shopping project.">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- SVG Gradients Definition -->
+    <svg style="width:0; height:0; position:absolute;" aria-hidden="true">
+        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#818cf8" />
+            <stop offset="100%" stop-color="#4f46e5" />
+        </linearGradient>
+    </svg>
+
+    <!-- PAGE 1: Login Page -->
+    <div id="login-page" class="page-container active">
+        <div class="login-wrapper">
+            <div class="login-card glass-panel animate-fade-in">
+                <div class="login-card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; width: 100%;">
+                    <div class="login-logo" style="margin-bottom: 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                            <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+                            <path d="M3 12A9 3 0 0 0 21 12"/>
+                        </svg>
+                        <span data-translate="brand">CARFOON Online Shopping</span>
+                    </div>
+                    <div class="lang-select-wrapper">
+                        <select class="lang-select-small" onchange="changeLanguage(this.value)" aria-label="Select Language">
+                            <option value="en">English</option>
+                            <option value="so" selected>Somali</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SUBVIEW 1: Login Form Container -->
+                <div id="login-form-container">
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p>Enter your email or username and password to log in.</p>
+                    
+                    <form id="login-form">
+                        <div class="form-group" style="text-align: left;">
+                            <label for="login-email">Email / Username</label>
+                            <input type="text" id="login-email" class="form-control" placeholder="e.g. admin@gmail.com or username" required autocomplete="email">
+                        </div>
+                        <div class="form-group" style="text-align: left;">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                        </div>
+                        
+                        <div class="auth-helper-links" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: -0.25rem; margin-bottom: 1rem;">
+                            <a href="#" onclick="showAuthView('forgot')" style="color: var(--accent-primary); text-decoration: none;">Forgot Password?</a>
+                            <a href="#" onclick="showAuthView('register')" style="color: var(--accent-primary); text-decoration: none;">Create Account (Sign Up)</a>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+                            <span data-translate="login_btn_text">Geli Nidaamka (Login)</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- SUBVIEW 2: Register Form Container -->
+                <div id="register-form-container" style="display: none;">
+                    <h2 data-translate="register_title">Diiwaan Gelin (Sign Up)</h2>
+                    <p data-translate="register_subtitle">Fadlan geli macluumaadkaaga si aad u furato akoon cusub.</p>
+                    
+                    <form id="register-form">
+                        <div class="form-group" style="text-align: left;">
+                            <label for="register-name" data-translate="fullname_label">Magacaaga oo Buuxa (Full Name)</label>
+                            <input type="text" id="register-name" class="form-control" placeholder="Tusaale: Ahmed Ali" data-translate-placeholder="fullname_placeholder" required>
+                        </div>
+                        <div class="form-group" style="text-align: left;">
+                            <label for="register-email" data-translate="email_label">Email Address</label>
+                            <input type="email" id="register-email" class="form-control" placeholder="Tusaale: ahmed@gmail.com" data-translate-placeholder="email_register_placeholder" required>
+                        </div>
+                        <div class="form-group" style="text-align: left;">
+                            <label for="register-password" data-translate="password_label">Fure-sirta (Password)</label>
+                            <input type="password" id="register-password" class="form-control" placeholder="••••••••" data-translate-placeholder="password_placeholder" required>
+                        </div>
+                        <div class="form-group" style="text-align: left;">
+                            <label for="register-confirm" data-translate="confirm_password_label">Xaqiiji Fure-sirta (Confirm Password)</label>
+                            <input type="password" id="register-confirm" class="form-control" placeholder="••••••••" data-translate-placeholder="password_placeholder" required>
+                        </div>
+                        
+                        <div style="text-align: left; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                            <span data-translate="already_have_account">Waxaad mar hore leedahay akoon?</span>
+                            <a href="#" onclick="showAuthView('login')" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">Login</a>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                            <span data-translate="register_btn_text">Diiwaan Geli (Sign Up)</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- SUBVIEW 3: Forgot Password Form Container -->
+                <div id="forgot-form-container" style="display: none;">
+                    <!-- Phase A: Code Request -->
+                    <div id="forgot-request-phase">
+                        <h2 data-translate="forgot_title">Fure-sir Codso (Forgot Password)</h2>
+                        <p data-translate="forgot_subtitle">Geli email-kaaga si aan kuugu soo dirno koodhka xaqiijinta.</p>
+                        
+                        <form id="forgot-request-form">
+                            <div class="form-group" style="text-align: left;">
+                                <label for="forgot-email" data-translate="email_label">Email Address</label>
+                                <input type="email" id="forgot-email" class="form-control" placeholder="Tusaale: ahmed@gmail.com" data-translate-placeholder="email_register_placeholder" required>
+                            </div>
+                            
+                            <div style="text-align: left; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                                <a href="#" onclick="showAuthView('login')" style="color: var(--accent-primary); text-decoration: none;" data-translate="back_to_login">← Ku laabo Login-ka</a>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                                <span data-translate="send_code_btn">Soo Dir Koodhka (Send Code)</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Phase B: Password Reset -->
+                    <div id="forgot-reset-phase" style="display: none;">
+                        <h2 data-translate="reset_title">Deji Fure-sir Cusub</h2>
+                        <p data-translate="reset_subtitle">Geli koodhka xaqiijinta iyo fure-sirta cusub ee aad rabto.</p>
+                        
+                        <form id="forgot-reset-form">
+                            <div class="form-group" style="text-align: left;">
+                                <label for="forgot-code" data-translate="verification_code_label">Koodhka Xaqiijinta (Verification Code)</label>
+                                <input type="text" id="forgot-code" class="form-control" placeholder="6-Digit Code" data-translate-placeholder="code_placeholder" required>
+                            </div>
+                            <div class="form-group" style="text-align: left;">
+                                <label for="forgot-password-new" data-translate="new_password_label">Fure-sir Cusub (New Password)</label>
+                                <input type="password" id="forgot-password-new" class="form-control" placeholder="••••••••" data-translate-placeholder="password_placeholder" required>
+                            </div>
+                            <div class="form-group" style="text-align: left;">
+                                <label for="forgot-password-confirm" data-translate="confirm_password_label">Xaqiiji Fure-sirta (Confirm Password)</label>
+                                <input type="password" id="forgot-password-confirm" class="form-control" placeholder="••••••••" data-translate-placeholder="password_placeholder" required>
+                            </div>
+                            
+                            <div style="text-align: left; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                                <a href="#" onclick="cancelResetPhase()" style="color: var(--accent-primary); text-decoration: none;" data-translate="cancel_reset">← Cancel</a>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                                <span data-translate="reset_btn_text">Bedel Fure-sirta (Reset Password)</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: Storefront Page -->
+    <div id="store-page" class="page-container">
+        <!-- Navigation Bar -->
+        <header class="navbar">
+            <div class="logo" id="logo-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+                    <path d="M3 12A9 3 0 0 0 21 12"/>
+                </svg>
+                <span data-translate="brand">CARFOON Online Shopping</span>
+            </div>
+
+            <nav class="nav-tabs">
+                <button class="nav-tab-btn active" data-view="categories" id="tab-btn-categories">
+                    <span data-translate="nav_categories">Categories</span>
+                </button>
+                <button class="nav-tab-btn" data-view="cart" id="tab-btn-cart">
+                    <span data-translate="nav_cart">Cart</span>
+                </button>
+                <button class="nav-tab-btn" data-view="orders" id="tab-btn-orders">
+                    <span data-translate="nav_orders">Orders</span>
+                </button>
+                <button class="nav-tab-btn" data-view="payments" id="tab-btn-payments">
+                    <span data-translate="nav_payments">Payments</span>
+                </button>
+                <button class="nav-tab-btn" data-view="profile" id="tab-btn-profile">
+                    <span data-translate="nav_profile">Profile</span>
+                </button>
+            </nav>
+
+            <div class="nav-actions">
+                <!-- Language Selector -->
+                <div class="lang-select-container" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <select class="lang-select" onchange="changeLanguage(this.value)" aria-label="Select Language">
+                        <option value="en">English</option>
+                        <option value="so" selected>Somali</option>
+                    </select>
+                </div>
+
+                <!-- Logged In User details -->
+                <div class="user-profile-badge" id="active-user-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span id="active-user-name">Loading User...</span>
+                </div>
+
+                <!-- Admin console redirect button (only shown for admins) -->
+                <button id="nav-admin-dashboard-btn" class="btn-primary" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span data-translate="nav_admin_dashboard">Admin Dashboard</span>
+                </button>
+
+                <!-- Logout Button -->
+                <button class="btn-icon" onclick="logout()" title="Logout account">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme Dark/Light Mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <main class="app-container">
+            <!-- SECTION: Categories Storefront View -->
+            <section id="categories-view" class="view-section active">
+                <div class="storefront-layout-new">
+                    <!-- Left Sidebar Categories -->
+                    <aside class="store-sidebar">
+                        <div class="menu-section-label" data-translate="sidebar_categories">CATEGORIES</div>
+                        <div id="category-filters" class="category-filters-vertical">
+                            <!-- Loaded dynamically in app.js -->
+                        </div>
+                        <button class="btn-sidebar-footer" id="btn-view-reports" onclick="showReportsToast()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span data-translate="view_reports_btn">View Reports</span>
+                        </button>
+                        
+                        <div class="menu-section-label" style="margin-top: 1.5rem;">COMPANY</div>
+                        <button class="nav-tab-btn" data-view="about" id="tab-btn-about" style="width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border: none; background: transparent; border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; text-align: left; font-weight: 500; transition: all 0.2s;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                            <span>About Us</span>
+                        </button>
+                        <button class="nav-tab-btn" data-view="contact" id="tab-btn-contact" style="width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border: none; background: transparent; border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; text-align: left; font-weight: 500; transition: all 0.2s;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span>Contact Us</span>
+                        </button>
+                    </aside>
+
+                    <!-- Main Store Content Area -->
+                    <div class="store-main-new">
+                        <!-- Dark Hero Banner -->
+                        <div class="store-hero">
+                            <h1 id="storefront-greeting-title">Hi, Customer</h1>
+                            <p data-translate="store_subtitle">Welcome back! Find everything you need for your business operations.</p>
+                            <div class="hero-search-wrapper">
+                                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                <input type="text" id="store-search" placeholder="Search products, orders, or categories..." data-translate-placeholder="search_placeholder" oninput="filterStoreProducts()">
+                            </div>
+                        </div>
+
+                        <!-- Trending Section Headers -->
+                        <div class="trending-header">
+                            <div class="trending-title-group">
+                                <h2 data-translate="trending_items_title">Trending Items</h2>
+                                <p data-translate="trending_items_subtitle">Recommended based on your recent activity</p>
+                            </div>
+                            <div class="trending-actions">
+                                <button class="btn-outline-small" onclick="toggleStoreFilters()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                    <span data-translate="filter_btn">Filter</span>
+                                </button>
+                                <select id="sort-products" class="sort-select" onchange="sortStoreProducts()">
+                                    <option value="newest" data-translate="sort_newest">Sort by: Newest</option>
+                                    <option value="price-low" data-translate="sort_price_low">Price: Low to High</option>
+                                    <option value="price-high" data-translate="sort_price_high">Price: High to Low</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Products Catalog Grid -->
+                        <div id="products-grid" class="products-grid-new">
+                            <!-- Loaded dynamically in app.js -->
+                        </div>
+
+                        <!-- Bottom Banners Section -->
+                        <div class="store-bottom-grid">
+                            <!-- Promo Card 1: Bulk Discount -->
+                            <div class="promo-card discount-card">
+                                <div class="promo-info">
+                                    <h3 data-translate="bulk_discount_title">Bulk Order Discount</h3>
+                                    <p data-translate="bulk_discount_desc">Save up to 15% when ordering more than 50 units of selected inventory items.</p>
+                                    <button class="btn-promo-grey" onclick="showBulkPromoDetails()" data-translate="explore_terms_btn">Explore Terms</button>
+                                </div>
+                                <div class="promo-icon-watermark">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+                                </div>
+                            </div>
+                            <!-- Promo Card 2: Rewards loyalty -->
+                            <div class="promo-card rewards-card">
+                                <div class="rewards-header-row">
+                                    <span class="rewards-tag-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ea580c;"><path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l7.59-7.59c.39-.39.39-1.02 0-1.41L12 2z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+                                    </span>
+                                    <div class="rewards-title-group">
+                                        <h3 data-translate="rewards_member_title">Rewards Member</h3>
+                                        <p data-translate="rewards_member_desc">You're only 250 points away from a $25 credit on your next order.</p>
+                                    </div>
+                                </div>
+                                <div class="rewards-progress-wrapper">
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar-fill" style="width: 75%;"></div>
+                                    </div>
+                                    <div class="progress-labels">
+                                        <span data-translate="points_750">750 Points</span>
+                                        <span data-translate="points_1000">1000 Points</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Cart View -->
+            <section id="cart-view" class="view-section">
+                <div class="cart-view-layout">
+                    <!-- Left: Cart Items List -->
+                    <div class="cart-view-main glass-panel">
+                        <h2 class="cart-large-title">
+                            <span data-translate="cart_large_title_text">Your Shopping Cart</span>
+                            <span class="db-info-pill-large" id="cart-large-count">0 items</span>
+                        </h2>
+                        <p class="panel-subtitle" data-translate="cart_large_subtitle">Review the items you have added to the cart before submitting your order.</p>
+                        
+                        <div id="cart-items-large-container" class="cart-items-large-list">
+                            <!-- Loaded dynamically in app.js -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Summary and Checkout -->
+                    <aside class="cart-view-sidebar glass-panel">
+                        <h3 data-translate="order_summary_title">Order Summary</h3>
+                        <div class="cart-summary-box">
+                            <div class="summary-row">
+                                <span data-translate="subtotal_label">Subtotal</span>
+                                <span id="cart-large-subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span data-translate="vat_label">Tax / VAT (15%)</span>
+                                <span id="cart-large-vat">$0.00</span>
+                            </div>
+                            <div class="summary-row total-row">
+                                <span data-translate="grand_total_label">Grand Total</span>
+                                <span id="cart-large-total">$0.00</span>
+                            </div>
+                            <button id="btn-large-checkout" class="btn-primary" style="width:100%; margin-top: 1.5rem;" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <span data-translate="checkout_btn_text">Checkout</span>
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- SECTION: Orders View -->
+            <section id="orders-view" class="view-section">
+                <div class="orders-view-layout glass-panel">
+                    <h2 class="orders-title" data-translate="my_orders_title">My Orders</h2>
+                    <p class="panel-subtitle" data-translate="my_orders_subtitle">Track your previous orders in the system here.</p>
+                    <div id="orders-large-container" class="orders-large-list">
+                        <!-- Loaded dynamically in app.js -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Payments View -->
+            <section id="payments-view" class="view-section">
+                <div class="orders-view-layout glass-panel">
+                    <h2 class="orders-title" data-translate="my_payments_title">My Payments</h2>
+                    <p class="panel-subtitle" data-translate="my_payments_subtitle">View your payment history.</p>
+                    <div class="table-wrapper">
+                        <table class="oracle-data-table" id="customer-payments-table" style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left; padding:0.75rem; border-bottom:1px solid var(--border-color);">Payment ID</th>
+                                    <th style="text-align:left; padding:0.75rem; border-bottom:1px solid var(--border-color);">Order ID</th>
+                                    <th style="text-align:left; padding:0.75rem; border-bottom:1px solid var(--border-color);">Amount</th>
+                                    <th style="text-align:left; padding:0.75rem; border-bottom:1px solid var(--border-color);">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customer-payments-body">
+                                <!-- Loaded dynamically in app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Profile/Permissions View -->
+            <section id="profile-view" class="view-section">
+                <div class="permissions-layout">
+                    <!-- Left Side: User Profile & Database Role Card -->
+                    <div class="profile-card glass-panel">
+                        <div class="profile-avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <h3 id="perm-user-name" class="profile-name">Ahmed Ali</h3>
+                        <p id="perm-user-email" class="profile-email">ahmed@gmail.com</p>
+                        <div id="perm-user-role-badge" class="role-badge">CUSTOMER</div>
+                        
+                        <div class="role-description">
+                            <h4 class="role-desc-title">Fahfaahinta Booska (Role Description)</h4>
+                            <p id="perm-role-text" class="role-desc-text">
+                                Loading...
+                            </p>
+                        </div>
+                        
+                        <div class="db-session-info">
+                            <div class="session-info-row">
+                                <span data-translate="db_engine_label">System Engine</span>
+                                <span>E-Commerce Server v2.0</span>
+                            </div>
+                            <div class="session-info-row">
+                                <span>Session Status</span>
+                                <span class="status-active"><span class="pulse-dot"></span> Active</span>
+                            </div>
+                            <div class="session-info-row">
+                                <span>Current Schema</span>
+                                <span>c##shop_user</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Application Policy Matrix Card -->
+                    <div class="policy-card glass-panel">
+                        <h3 class="panel-title">Muraayada Ogolaanshaha App-ka (Application Access Matrix)</h3>
+                        <p class="panel-subtitle">Hab-dhaqanka interface-ka ee ku saleysan shaqada laguu igmaday.</p>
+                        
+                        <div class="policy-list">
+                            <!-- Row 1: View Products -->
+                            <div class="policy-item">
+                                <div class="policy-info">
+                                    <span class="policy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </span>
+                                    <div>
+                                        <div class="policy-title-text">Browse Products</div>
+                                        <div class="policy-desc-text">Ability to view the catalog and filter products.</div>
+                                    </div>
+                                </div>
+                                <span id="policy-browse" class="policy-status">
+                                    <!-- Dynamic status -->
+                                </span>
+                            </div>
+                            <!-- Row 2: Add to Cart & Checkout -->
+                            <div class="policy-item">
+                                <div class="policy-info">
+                                    <span class="policy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                                    </span>
+                                    <div>
+                                        <div class="policy-title-text">Cart & Checkout</div>
+                                        <div class="policy-desc-text">Ability to add items to cart and complete checkout.</div>
+                                    </div>
+                                </div>
+                                <span id="policy-checkout" class="policy-status">
+                                    <!-- Dynamic status -->
+                                </span>
+                            </div>
+                            <!-- Row 3: Add new product (Trigger Test) -->
+                            <div class="policy-item">
+                                <div class="policy-info">
+                                    <span class="policy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                                    </span>
+                                    <div>
+                                        <div class="policy-title-text">Insert Products</div>
+                                        <div class="policy-desc-text" data-translate="policy_add_prod_desc">Ability to add new products to the system.</div>
+                                    </div>
+                                </div>
+                                <span id="policy-add-product" class="policy-status">
+                                    <!-- Dynamic status -->
+                                </span>
+                            </div>
+                            <!-- Row 4: Update status -->
+                            <div class="policy-item">
+                                <div class="policy-info">
+                                    <span class="policy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                    </span>
+                                    <div>
+                                        <div class="policy-title-text">Bedelaada Status-ka Dalabka (Update Status)</div>
+                                        <div class="policy-desc-text" data-translate="policy_update_status_desc">Ability to change order status in the system.</div>
+                                    </div>
+                                </div>
+                                <span id="policy-update-status" class="policy-status">
+                                    <!-- Dynamic status -->
+                                </span>
+                            </div>
+                            <!-- Row 5: View DB Tables -->
+                            <div class="policy-item">
+                                <div class="policy-info">
+                                    <span class="policy-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                                    </span>
+                                    <div>
+                                        <div class="policy-title-text">Aragtida Shaxaha DB-ga (Admin Tables)</div>
+                                        <div class="policy-desc-text" data-translate="policy_view_tables_desc">Ability to access Live View of internal system tables.</div>
+                                    </div>
+                                </div>
+                                <span id="policy-view-tables" class="policy-status">
+                                    <!-- Dynamic status -->
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Oracle DB System and Object Privileges -->
+                <div class="db-privileges-grid" style="margin-top:2rem;">
+                    <!-- Left Table: Oracle System Privileges -->
+                    <div class="privileges-card glass-panel">
+                        <h3 class="panel-title" data-translate="system_privs_title">System Privileges</h3>
+                        <p class="panel-subtitle" data-translate="system_privs_subtitle">Permissions the user has to perform general system actions.</p>
+                        <div class="table-wrapper" style="margin-top:1rem;">
+                            <table class="oracle-data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Privilege (Ruqsada)</th>
+                                        <th>Nooca (Type)</th>
+                                        <th>Status-ka Hadda (Active Status)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="system-privs-body">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right Table: Oracle Object Privileges -->
+                    <div class="privileges-card glass-panel">
+                        <h3 class="panel-title" data-translate="object_privs_title">Object Privileges</h3>
+                        <p class="panel-subtitle">Specific rights the user has on tables and packages.</p>
+                        <div class="table-wrapper" style="margin-top:1rem;">
+                            <table class="oracle-data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Table/Object Name</th>
+                                        <th>SELECT</th>
+                                        <th>INSERT</th>
+                                        <th>UPDATE</th>
+                                        <th>EXECUTE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="object-privs-body">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                
+                <!-- ABOUT US VIEW -->
+                <section id="about-view" class="view-section">
+                    <header class="view-header">
+                        <div class="header-titles">
+                            <h2>About Us</h2>
+                            <p>Learn more about our premium e-commerce platform.</p>
+                        </div>
+                    </header>
+                    <div class="card" style="padding:3rem; text-align:center; max-width:800px; margin:0 auto; background:var(--bg-surface);">
+                        <div style="width:80px; height:80px; background:linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem auto; color:white; font-size:2rem; font-weight:800;">
+                            SC
+                        </div>
+                        <h3 style="font-size:2rem; font-weight:700; margin-bottom:1rem; font-family:var(--font-heading);">ShopCart.</h3>
+                        <p style="font-size:1.1rem; color:var(--text-secondary); line-height:1.7; margin-bottom:2rem;">
+                            Welcome to ShopCart, the premier online destination for premium electronics, stylish clothing, and trendy footwear. Our mission is to provide an unparalleled shopping experience with top-tier products, secure payments, and fast delivery.
+                        </p>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; text-align:left;">
+                            <div style="padding:1.5rem; background:rgba(37,99,235,0.05); border-radius:var(--radius-lg); border:1px solid rgba(37,99,235,0.1);">
+                                <h4 style="font-weight:600; color:var(--primary-color); margin-bottom:0.5rem;">Quality First</h4>
+                                <p style="font-size:0.9rem; color:var(--text-secondary);">We source only the best products from verified global suppliers to ensure maximum quality.</p>
+                            </div>
+                            <div style="padding:1.5rem; background:rgba(16,185,129,0.05); border-radius:var(--radius-lg); border:1px solid rgba(16,185,129,0.1);">
+                                <h4 style="font-weight:600; color:#10b981; margin-bottom:0.5rem;">Secure Shopping</h4>
+                                <p style="font-size:0.9rem; color:var(--text-secondary);">Your data is safe with us. We use industry-standard encryption and security practices.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- CONTACT US VIEW -->
+                <section id="contact-view" class="view-section">
+                    <header class="view-header">
+                        <div class="header-titles">
+                            <h2>Contact Us</h2>
+                            <p>We're here to help! Reach out to our support team.</p>
+                        </div>
+                    </header>
+                    <div class="card" style="padding:2rem; max-width:600px; margin:0 auto;">
+                        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                            <div style="display:flex; align-items:center; gap:1rem;">
+                                <div style="width:48px; height:48px; background:rgba(37,99,235,0.1); color:var(--primary-color); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                </div>
+                                <div>
+                                    <h4 style="font-weight:600;">Phone</h4>
+                                    <p style="color:var(--text-secondary);">(555) 123-4567</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:1rem;">
+                                <div style="width:48px; height:48px; background:rgba(37,99,235,0.1); color:var(--primary-color); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                </div>
+                                <div>
+                                    <h4 style="font-weight:600;">Email</h4>
+                                    <p style="color:var(--text-secondary);">support@shopcart.com</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:1rem;">
+                                <div style="width:48px; height:48px; background:rgba(37,99,235,0.1); color:var(--primary-color); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                </div>
+                                <div>
+                                    <h4 style="font-weight:600;">Office</h4>
+                                    <p style="color:var(--text-secondary);">123 Tech Boulevard, Innovation City</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            <!-- Storefront Live Terminal Logs Removed -->
+        </main>
+    </div>
+
+    <!-- PAGE 3: Admin Page (ShopAdmin Sidebar Layout) -->
+    <div id="admin-page" class="page-container">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-brand">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="brand-icon">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                    <path d="M3 6h18"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span data-translate="brand_admin">ShopAdmin</span>
+            </div>
+
+            <nav class="admin-sidebar-menu">
+                <div class="menu-section-label" data-translate="menu_section_main">MAIN</div>
+                <button class="admin-menu-btn active" data-subview="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <span data-translate="menu_dashboard">Dashboard</span>
+                </button>
+                <button class="admin-menu-btn" data-subview="products">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                    <span data-translate="menu_products">Products</span>
+                </button>
+                <button class="admin-menu-btn" data-subview="categories">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.373 8.373a1 1 0 1 1-1.414-1.414L12.172 12 5.213 5.04a1 1 0 1 1 1.414-1.414L15 12Z"/><path d="m20 12-8.373 8.373a1 1 0 1 1-1.414-1.414L17.172 12 10.213 5.04a1 1 0 1 1 1.414-1.414L20 12Z"/></svg>
+                    <span data-translate="menu_categories">Categories</span>
+                </button>
+
+                <div class="menu-section-label" data-translate="menu_section_commerce">COMMERCE</div>
+                <button class="admin-menu-btn" data-subview="orders">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="8" x2="16" y1="10" y2="10"/><line x1="8" x2="16" y1="14" y2="14"/><line x1="8" x2="12" y1="18" y2="18"/></svg>
+                    <span data-translate="menu_orders">Orders</span>
+                </button>
+                <button class="admin-menu-btn" data-subview="users">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span data-translate="menu_users">Users</span>
+                </button>
+                <button class="admin-menu-btn" data-subview="payments">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    <span data-translate="menu_payments">Payments</span>
+                </button>
+
+                <div class="menu-section-label" data-translate="menu_section_system">SYSTEM</div>
+                <button class="admin-menu-btn" data-subview="audit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    <span data-translate="menu_audit">Audit Log</span>
+                </button>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <button class="admin-footer-btn back-store-btn" id="btn-back-to-store">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                    <span data-translate="back_to_shop">Back to Shop</span>
+                </button>
+                <button class="admin-footer-btn logout-btn" onclick="logout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    <span data-translate="logout">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Workspace -->
+        <main class="admin-workspace">
+            <!-- View 1: Dashboard -->
+            <div id="subview-dashboard" class="admin-subview active">
+                <div class="admin-subview-header">
+                    <h2 data-translate="dashboard_overview">Dashboard Overview</h2>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span class="stat-label" data-translate="stat_total_users">Total Users</span>
+                            <span class="stat-value" id="stat-total-users">0</span>
+                        </div>
+                        <div class="stat-icon u-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span class="stat-label" data-translate="stat_total_products">Total Products</span>
+                            <span class="stat-value" id="stat-total-products">0</span>
+                        </div>
+                        <div class="stat-icon p-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span class="stat-label" data-translate="stat_total_orders">Total Orders</span>
+                            <span class="stat-value" id="stat-total-orders">0</span>
+                        </div>
+                        <div class="stat-icon o-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="8" x2="16" y1="10" y2="10"/><line x1="8" x2="16" y1="14" y2="14"/><line x1="8" x2="12" y1="18" y2="18"/></svg>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-info">
+                            <span class="stat-label" data-translate="stat_total_revenue">Total Revenue</span>
+                            <span class="stat-value" id="stat-total-revenue">$0.00</span>
+                        </div>
+                        <div class="stat-icon r-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Dashboard Charts -->
+                <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <div class="glass-panel" style="padding: 1.5rem; border-radius: var(--radius-lg);">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-family: var(--font-heading);">Sales Over Time</h3>
+                        <canvas id="salesChart" style="width: 100%; height: 250px;"></canvas>
+                    </div>
+                    <div class="glass-panel" style="padding: 1.5rem; border-radius: var(--radius-lg);">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-family: var(--font-heading);">Revenue by Category</h3>
+                        <canvas id="categoryChart" style="width: 100%; height: 250px;"></canvas>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- View 2: Products -->
+            <div id="subview-products" class="admin-subview">
+                <div class="admin-subview-header">
+                    <div class="title-with-search">
+                        <h2>Products</h2>
+                        <div class="search-container">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" id="search-products" placeholder="Search..." oninput="filterAdminProducts()">
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="toggleAddProductForm()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                        Add product
+                    </button>
+                </div>
+
+                <div class="workspace-layout-with-sidebar">
+                    <div class="workspace-main-table">
+                        <div class="table-card glass-panel">
+                            <h3>All products (<span id="admin-products-count">0</span>)</h3>
+                            <div class="table-wrapper">
+                                <table class="oracle-data-table" id="admin-products-table">
+                                    <thead>
+                                        <tr>
+                                            <th>NAME</th>
+                                            <th>CATEGORY</th>
+                                            <th>PRICE</th>
+                                            <th style="text-align: right;">ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-products-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide-in form for Product Trigger -->
+                    <div class="workspace-side-panel" id="product-form-panel">
+                        <section class="simulation-card">
+                            <span style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem; display:block;">System Automation</span>
+                            <h3 style="margin-bottom:0.5rem;">Add New Product</h3>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.5rem; line-height:1.4;">
+                                Markii aad insert gareynayso badeeco cusub, nidaamka ayaa si toos ah magaca uga dhigaya <strong>UPPERCASE</strong>.
+                            </p>
+                            <form id="admin-add-product-form">
+                                <div class="form-group">
+                                    <label for="admin-prod-name">Magaca Product-ga (Lower Case)</label>
+                                    <input type="text" id="admin-prod-name" class="form-control" placeholder="Tusaale: super headphone hd" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-prod-price">Qiimaha ($)</label>
+                                    <input type="number" id="admin-prod-price" class="form-control" placeholder="Tusaale: 99.99" step="0.01" min="0.01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-prod-category">Category-ga</label>
+                                    <select id="admin-prod-category" class="form-control">
+                                        <!-- Loaded dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-prod-images">Product Images</label>
+                                    <input type="file" id="admin-prod-images" class="form-control" accept="image/*" multiple>
+                                    <small style="color:#64748b;">You can select multiple images.</small>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                                    Ku Dar Badeeco
+                                </button>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 3: Categories -->
+            <div id="subview-categories" class="admin-subview">
+                <div class="admin-subview-header">
+                    <div class="title-with-search">
+                        <h2>Categories</h2>
+                        <div class="search-container">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" id="search-categories" placeholder="Search..." oninput="filterAdminCategories()">
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="toggleAddCategoryForm()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                        Add category
+                    </button>
+                </div>
+
+                <div class="workspace-layout-with-sidebar">
+                    <div class="workspace-main-table">
+                        <div class="table-card glass-panel">
+                            <h3>All categories (<span id="admin-categories-count">0</span>)</h3>
+                            <div class="table-wrapper">
+                                <table class="oracle-data-table" id="admin-categories-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>CATEGORY NAME</th>
+                                            <th>PRODUCTS</th>
+                                            <th style="text-align: right;">ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-categories-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="workspace-side-panel" id="category-form-panel">
+                        <section class="simulation-card">
+                            <h3 class="simulation-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-primary)"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                                Add New Category
+                            </h3>
+                            <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1rem; line-height: 1.4;">
+                                Add a new category for products.
+                            </p>
+                            <form id="admin-add-category-form">
+                                <div class="form-group">
+                                    <label for="admin-cat-name">Magaca Category-ga</label>
+                                    <input type="text" id="admin-cat-name" class="form-control" placeholder="Tusaale: Electronics" required>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                                    Ku Dar Category
+                                </button>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 4: Orders -->
+            <div id="subview-orders" class="admin-subview">
+                <div class="admin-subview-header">
+                    <div class="title-with-search">
+                        <h2>Orders</h2>
+                        <div class="search-container" style="max-width: 200px;">
+                            <select id="filter-order-status" class="form-control" onchange="filterAdminOrders()" aria-label="Filter orders by status">
+                                <option value="all">All statuses</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workspace-layout-with-sidebar">
+                    <div class="workspace-main-table">
+                        <div class="table-card glass-panel">
+                            <h3>All orders (<span id="admin-orders-count">0</span>)</h3>
+                            <div class="table-wrapper">
+                                <table class="oracle-data-table" id="admin-orders-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ORDER ID</th>
+                                            <th>USER</th>
+                                            <th>TOTAL</th>
+                                            <th>STATUS</th>
+                                            <th>ITEMS</th>
+                                            <th style="text-align: right;">ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-orders-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trigger status updates -->
+                    <div class="workspace-side-panel" id="order-form-panel">
+                        <section class="simulation-card">
+                            <span style="font-size:0.75rem; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:0.5rem; display:block;">Status Automation</span>
+                            <h3 style="margin-bottom:0.5rem;">Update Order Status</h3>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.5rem; line-height:1.4;">
+                                Markii aad cusbooneysiiso status-ka dalabka (Order), nidaamka ayaa si toos ah u duubaya isbedelka.
+                            </p>
+                            <form id="admin-update-status-form">
+                                <div class="form-group">
+                                    <label for="admin-status-order-id">Order ID</label>
+                                    <input type="number" id="admin-status-order-id" class="form-control" placeholder="Geli ID-ga dalabka" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-status-value">Status-ka Cusub</label>
+                                    <select id="admin-status-value" class="form-control">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Shipped">Shipped</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:100%; justify-content: center;">
+                                    Bedel Status
+                                </button>
+                            </form>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 5: Users -->
+            <div id="subview-users" class="admin-subview">
+                <div class="admin-subview-header">
+                    <div class="title-with-search">
+                        <h2>Users</h2>
+                        <div class="search-container">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" id="search-users" placeholder="Search..." oninput="filterAdminUsers()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card glass-panel">
+                    <h3>All users (<span id="admin-users-count-badge">0</span>)</h3>
+                    <div class="table-wrapper">
+                        <table class="oracle-data-table" id="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NAME</th>
+                                    <th>EMAIL</th>
+                                    <th>ORDERS</th>
+                                    <th style="text-align: right;">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 6: Payments -->
+            <div id="subview-payments" class="admin-subview">
+                <div class="admin-subview-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+                    <h2>Payments Dashboard</h2>
+                    <div class="payment-actions">
+                        <button class="btn-outline-small" style="display:flex; align-items:center; gap:0.5rem; padding: 0.5rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-surface); cursor:pointer;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Summary Cards -->
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem; gap:1.5rem;">
+                    <div class="stat-card glass-panel" style="padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color); display:flex; gap:1rem; align-items:center;">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.25rem;">Gross Volume</h3>
+                            <p class="stat-value" id="payment-gross-volume" style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700;">$0.00</p>
+                            <span class="stat-trend trend-up" style="font-size:0.75rem; color:#10b981;">↑ 12.5%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel" style="padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color); display:flex; gap:1rem; align-items:center;">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.25rem;">Transactions</h3>
+                            <p class="stat-value" id="payment-tx-count" style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700;">0</p>
+                            <span class="stat-trend trend-up" style="font-size:0.75rem; color:#10b981;">↑ 4.2%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel" style="padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color); display:flex; gap:1rem; align-items:center;">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.25rem;">Avg. Ticket</h3>
+                            <p class="stat-value" id="payment-avg-ticket" style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700;">$0.00</p>
+                            <span class="stat-trend trend-up" style="font-size:0.75rem; color:#10b981;">↑ 1.1%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-panel" style="padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color); display:flex; gap:1rem; align-items:center;">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 9-6 6"/><path d="m9 9 6 6"/><circle cx="12" cy="12" r="10"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.25rem;">Failed / Disputes</h3>
+                            <p class="stat-value" style="font-family:var(--font-heading); font-size:1.5rem; font-weight:700;">0</p>
+                            <span class="stat-trend" style="font-size:0.75rem; color:var(--text-secondary)">0.0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-card glass-panel" style="padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                        <h3 style="font-family:var(--font-heading); font-weight:700; font-size:1.2rem;">Recent Transactions</h3>
+                        <div class="search-container" style="display:flex; align-items:center; background:var(--bg-app); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.4rem 0.8rem; width:250px;">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted); margin-right:0.5rem;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <input type="text" id="search-payments" placeholder="Filter by ID, email..." oninput="filterAdminPayments()" style="border:none; background:transparent; outline:none; font-size:0.85rem; width:100%; color:var(--text-primary);">
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="oracle-data-table" id="admin-payments-table" style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">TXN ID</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">DATE</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">CUSTOMER</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">AMOUNT</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">FEE</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">METHOD</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color); text-align:left; color:var(--text-secondary); font-size:0.8rem;">STATUS</th>
+                                    <th style="padding:0.75rem 1rem; border-bottom:1px solid var(--border-color);"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-payments-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View 7: Audit Log -->
+            <div id="subview-audit" class="admin-subview">
+                <div class="admin-subview-header">
+                    <h2>System Audit Log</h2>
+                </div>
+
+                <div class="table-card glass-panel">
+                    <h3>System Execution Logs</h3>
+                    <div class="table-wrapper">
+                        <table class="oracle-data-table" id="admin-audit-table">
+                            <thead>
+                                <tr>
+                                    <th>LOG ID</th>
+                                    <th>ORDER ID</th>
+                                    <th>OLD STATUS</th>
+                                    <th>NEW STATUS</th>
+                                    <th>CHANGED AT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-audit-body">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div class="modal-content glass-panel" style="background:var(--bg-app); border-radius:var(--radius-lg); width:100%; max-width:500px; padding:2rem; box-shadow:var(--shadow-premium); position:relative;">
+            <button onclick="closePaymentModal()" style="position:absolute; top:1rem; right:1rem; background:transparent; border:none; cursor:pointer; color:var(--text-secondary);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            <h2 style="font-family:var(--font-heading); margin-bottom:1.5rem; text-align:center; color:var(--text-primary);">Secure Checkout</h2>
+            
+            <div id="payment-cart-summary" style="margin-bottom:1.5rem; max-height:150px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-md); padding:1rem;">
+                <!-- Cart items list will go here -->
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.2rem; margin-bottom:2rem; padding-bottom:1rem; border-bottom:1px solid var(--border-color); color:var(--text-primary);">
+                <span>Total Payment:</span>
+                <span id="payment-total-amount">$0.00</span>
+            </div>
+            
+            <form id="payment-form" onsubmit="event.preventDefault(); confirmPayment();">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-secondary);">Card Information</label>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <input type="text" placeholder="Card Number" required pattern="\\d{16}" title="16 digit card number" style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-surface); color:var(--text-primary);">
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="text" placeholder="MM/YY" required pattern="\\d{2}/\\d{2}" style="flex:1; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-surface); color:var(--text-primary);">
+                            <input type="text" placeholder="CVC" required pattern="\\d{3,4}" style="flex:1; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-surface); color:var(--text-primary);">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.5rem; color:var(--text-secondary);">Name on Card</label>
+                    <input type="text" placeholder="Full Name" required style="width:100%; padding:0.75rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-surface); color:var(--text-primary);">
+                </div>
+                <button type="submit" class="btn-primary" id="btn-confirm-payment" style="width:100%; padding:1rem; font-size:1rem; display:flex; justify-content:center; align-items:center; gap:0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Pay Now
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receipt-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div class="modal-content glass-panel" style="background:#ffffff; color:#000000; font-family:'Courier New', Courier, monospace; border-radius:var(--radius-md); width:100%; max-width:420px; padding:2rem; box-shadow:var(--shadow-premium); border: 2px solid #000; position:relative;">
+            <button onclick="closeReceiptModal()" style="position:absolute; top:1rem; right:1rem; background:transparent; border:none; cursor:pointer; color:#000000;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            
+            <div style="text-align:center; margin-bottom:1rem;">
+                <h2 style="font-family:'Courier New', Courier, monospace; font-size:1.6rem; font-weight:bold; margin-bottom:0.2rem; text-transform:uppercase; color:#000000;">CARFOON SHOPPING</h2>
+                <p style="margin:0; font-size:0.85rem; color:#000000;">MOGADISHU, SOMALIA</p>
+                <p style="margin:0; font-size:0.85rem; color:#000000;">Tell:636279489</p>
+                <p style="margin-top:0.5rem; font-size:0.9rem; color:#000000;">----------------------------------</p>
+                <h3 style="margin: 0.5rem 0; font-size:1.1rem; letter-spacing: 2px; text-transform:uppercase; font-weight:bold; color:#000000;">PAYMENT RECEIPT</h3>
+                <p style="margin:0; font-size:0.9rem; color:#000000;">----------------------------------</p>
+            </div>
+            
+            <div style="font-size:0.9rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:0.2rem; color:#000000;">
+                <div style="display:flex; justify-content:space-between;">
+                    <span>ORDER ID:</span>
+                    <strong id="receipt-order-id">#0000</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>DATE:</span>
+                    <span id="receipt-date">--/--/----</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>CUSTOMER:</span>
+                    <span id="receipt-customer">Guest</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>STATUS:</span>
+                    <strong style="color:#047857; text-transform:uppercase;">PAID</strong>
+                </div>
+            </div>
+            
+            <div style="margin:0.5rem 0; font-size:0.9rem; color:#000000;">----------------------------------</div>
+            
+            <!-- Items Area -->
+            <div id="receipt-items" style="font-size:0.85rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:0.4rem; color:#000000;">
+                <!-- Dynamically populated rows -->
+            </div>
+            
+            <div style="margin:0.5rem 0; font-size:0.9rem; color:#000000;">----------------------------------</div>
+            
+            <div style="font-size:0.95rem; display:flex; flex-direction:column; gap:0.3rem; margin-bottom:1.5rem; color:#000000;">
+                <div style="display:flex; justify-content:space-between;">
+                    <span>SUBTOTAL:</span>
+                    <span id="receipt-subtotal">$0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span>TAX (0%):</span>
+                    <span>$0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.15rem; border-top:1px dashed #000; padding-top:0.4rem; margin-top:0.2rem; color:#000000;">
+                    <span>TOTAL CHARGED:</span>
+                    <span id="receipt-total">$0.00</span>
+                </div>
+            </div>
+            
+            <!-- Simulated Barcode -->
+            <div style="text-align:center; margin-top:1.5rem; display:flex; flex-direction:column; align-items:center;">
+                <div style="display:flex; justify-content:center; gap:2px; height:45px; width:220px; background:#000; border-left:10px solid #fff; border-right:10px solid #fff; box-sizing:border-box; background-image:repeating-linear-gradient(90deg, #000, #000 2px, #fff 2px, #fff 5px);"></div>
+                <span style="font-size:0.75rem; letter-spacing:4px; margin-top:0.4rem; color:#000000;" id="receipt-barcode-number">000000000000</span>
+            </div>
+            
+            <div style="text-align:center; margin-top:1.5rem; color:#000000;">
+                <p style="margin:0; font-size:0.85rem; font-style:italic;">Mahadsanid! Waad ku mahadsantahay</p>
+                <p style="margin:2px 0 0 0; font-size:0.85rem; font-style:italic;">booqashadaada.</p>
+            </div>
+            
+            <button onclick="closeReceiptModal()" class="btn-primary" style="width:100%; margin-top:1.5rem; padding:0.75rem; font-family:'Courier New', Courier, monospace; font-weight:bold; background:#000000; color:#ffffff; border:none; border-radius:var(--radius-sm); cursor:pointer; text-transform:uppercase;">Print & Close</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

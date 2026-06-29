@@ -1,0 +1,15 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Local uploads folder cache (optional, but keep it empty on git except folders)
+# uploads/*
+# !uploads/.gitkeep
