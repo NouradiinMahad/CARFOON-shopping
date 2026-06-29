@@ -79,6 +79,13 @@ class OnlineShoppingApp(tk.Tk):
         self.title("CARFOON online shopping - Oracle Desktop Client")
         self.configure(bg=COLOR_BACKGROUND)
         
+        # Set Window Titlebar Icon
+        try:
+            if os.path.exists("carfoon_logo.ico"):
+                self.iconbitmap("carfoon_logo.ico")
+        except Exception as e:
+            print(f"Error loading custom icon: {e}")
+        
         # Configure styles
         self.setup_styles()
         
