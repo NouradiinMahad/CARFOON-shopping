@@ -28,16 +28,16 @@ except ImportError:
 # ==============================================================================
 # DESIGN CONFIGURATION & COLORS
 # ==============================================================================
-COLOR_PRIMARY = "#1e3a8a"        # Royal blue
-COLOR_PRIMARY_HOVER = "#2563eb"  # Bright blue
-COLOR_SECONDARY = "#0f172a"      # Dark slate sidebar
+COLOR_PRIMARY = "#0073e6"        # Vibrant Blue from CARFOON Logo
+COLOR_PRIMARY_HOVER = "#0084ff"  # Hover Blue
+COLOR_SECONDARY = "#072146"      # Deep Navy Blue from CARFOON Logo
 COLOR_BACKGROUND = "#f8fafc"     # Cool gray background
 COLOR_CARD_BG = "#ffffff"        # White card background
 COLOR_TEXT = "#1e293b"           # Dark text
 COLOR_TEXT_LIGHT = "#64748b"     # Light gray text
 COLOR_BORDER = "#cbd5e1"         # Slate border
 COLOR_SUCCESS = "#10b981"        # Emerald green
-COLOR_WARNING = "#f59e0b"        # Amber yellow
+COLOR_WARNING = "#f26522"        # Vibrant Orange from CARFOON Logo
 COLOR_DANGER = "#ef4444"         # Red
 
 FONT_HEADER = ("Segoe UI", 16, "bold")

@@ -16,14 +16,14 @@
     --text-secondary: #475569;
     --text-muted: #94a3b8;
 
-    --accent-primary: #4f46e5;
-    --accent-hover: #4338ca;
-    --accent-glow: rgba(79, 70, 229, 0.12);
-    --accent-glow-light: rgba(79, 70, 229, 0.04);
+    --accent-primary: #0073e6;
+    --accent-hover: #0059b3;
+    --accent-glow: rgba(0, 115, 230, 0.12);
+    --accent-glow-light: rgba(0, 115, 230, 0.04);
 
     /* Status Colors */
-    --status-pending: #f59e0b;
-    --status-pending-bg: rgba(245, 158, 11, 0.15);
+    --status-pending: #f26522;
+    --status-pending-bg: rgba(242, 101, 34, 0.15);
     --status-completed: #10b981;
     --status-completed-bg: rgba(16, 185, 129, 0.15);
     --status-shipped: #3b82f6;
@@ -52,10 +52,10 @@
     --text-secondary: #a1a1aa;
     --text-muted: #52525b;
 
-    --accent-primary: #6366f1;
-    --accent-hover: #4f46e5;
-    --accent-glow: rgba(99, 102, 241, 0.15);
-    --accent-glow-light: rgba(99, 102, 241, 0.05);
+    --accent-primary: #3399ff;
+    --accent-hover: #0073e6;
+    --accent-glow: rgba(51, 153, 255, 0.15);
+    --accent-glow-light: rgba(51, 153, 255, 0.05);
 
     --shadow-premium: 0 8px 30px rgba(0, 0, 0, 0.4);
     --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.1);
