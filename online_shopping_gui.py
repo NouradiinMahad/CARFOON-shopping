@@ -222,8 +222,24 @@ class LoginView(tk.Frame):
         # Brand Logo Area
         brand_frame = tk.Frame(self.frame, bg=COLOR_PRIMARY, height=110)
         brand_frame.pack(fill="x")
-        lbl_logo = tk.Label(brand_frame, text="🛒", font=("Segoe UI", 28), fg="#ffffff", bg=COLOR_PRIMARY)
-        lbl_logo.pack(pady=(10, 0))
+        
+        # Load brand logo image
+        self.logo_photo = None
+        try:
+            if os.path.exists("carfoon_logo.png"):
+                from PIL import Image, ImageTk
+                img = Image.open("carfoon_logo.png")
+                img = img.resize((50, 50), Image.Resampling.LANCZOS)
+                self.logo_photo = ImageTk.PhotoImage(img)
+                lbl_logo = tk.Label(brand_frame, image=self.logo_photo, bg=COLOR_PRIMARY)
+                lbl_logo.pack(pady=(12, 4))
+            else:
+                lbl_logo = tk.Label(brand_frame, text="🛒", font=("Segoe UI", 28), fg="#ffffff", bg=COLOR_PRIMARY)
+                lbl_logo.pack(pady=(10, 0))
+        except Exception:
+            lbl_logo = tk.Label(brand_frame, text="🛒", font=("Segoe UI", 28), fg="#ffffff", bg=COLOR_PRIMARY)
+            lbl_logo.pack(pady=(10, 0))
+            
         lbl_brand = tk.Label(brand_frame, text="CARFOON online shopping", font=FONT_TITLE, fg="#ffffff", bg=COLOR_PRIMARY)
         lbl_brand.pack(pady=(2, 10))
         
@@ -666,8 +682,22 @@ class BaseDashboard(tk.Frame):
         # Header banner inside sidebar
         logo_frame = tk.Frame(self.sidebar, bg=COLOR_PRIMARY, height=70)
         logo_frame.pack(fill="x")
-        lbl_logo = tk.Label(logo_frame, text="🛒 CARFOON Online", font=FONT_TITLE, fg="#ffffff", bg=COLOR_PRIMARY)
-        lbl_logo.pack(pady=20)
+        
+        # Try loading custom logo image in sidebar header
+        self.logo_photo = None
+        try:
+            if os.path.exists("carfoon_logo.png"):
+                from PIL import Image, ImageTk
+                img = Image.open("carfoon_logo.png")
+                img = img.resize((35, 35), Image.Resampling.LANCZOS)
+                self.logo_photo = ImageTk.PhotoImage(img)
+                lbl_logo = tk.Label(logo_frame, text=" CARFOON", image=self.logo_photo, compound="left", font=FONT_HEADER, fg="#ffffff", bg=COLOR_PRIMARY)
+            else:
+                lbl_logo = tk.Label(logo_frame, text="🛒 CARFOON Online", font=FONT_TITLE, fg="#ffffff", bg=COLOR_PRIMARY)
+        except Exception:
+            lbl_logo = tk.Label(logo_frame, text="🛒 CARFOON Online", font=FONT_TITLE, fg="#ffffff", bg=COLOR_PRIMARY)
+        
+        lbl_logo.pack(pady=15)
         
         # Current User Badge inside sidebar
         user_frame = tk.Frame(self.sidebar, bg=COLOR_SECONDARY, pady=10)
@@ -691,12 +721,20 @@ class BaseDashboard(tk.Frame):
                                activebackground="#b91c1c", activeforeground="#ffffff", borderwidth=0, cursor="hand2", command=self.app.logout_user)
         btn_logout.pack(side="bottom", fill="x", padx=15, pady=15, ipady=8)
         
+        def on_enter_logout(e):
+            btn_logout.config(bg="#b91c1c")
+        def on_leave_logout(e):
+            btn_logout.config(bg="#dc2626")
+        btn_logout.bind("<Enter>", on_enter_logout)
+        btn_logout.bind("<Leave>", on_leave_logout)
+        
         # Right Main Content Canvas
         self.main_content = tk.Frame(self, bg=COLOR_BACKGROUND)
         self.main_content.pack(side="right", fill="both", expand=True)
         
         self.current_frame = None
         self.sidebar_buttons = {}
+        self.active_view = None
 
     def add_menu_item(self, text, icon, frame_class):
         """Adds a navigation item to the sidebar menu"""
@@ -705,9 +743,21 @@ class BaseDashboard(tk.Frame):
                         command=lambda: self.switch_view(text, frame_class))
         btn.pack(fill="x", ipady=10, pady=2)
         self.sidebar_buttons[text] = btn
+        
+        # Bind hover transitions to inactive buttons
+        def on_enter(e):
+            if self.active_view != text:
+                btn.config(bg="#112d59", fg="#ffffff")
+        def on_leave(e):
+            if self.active_view != text:
+                btn.config(bg=COLOR_SECONDARY, fg="#cbd5e1")
+                
+        btn.bind("<Enter>", on_enter)
+        btn.bind("<Leave>", on_leave)
 
     def switch_view(self, text, frame_class):
         """Switches the main content canvas to the selected view"""
+        self.active_view = text
         # Highlight active sidebar button
         for key, btn in self.sidebar_buttons.items():
             if key == text:
@@ -756,10 +806,10 @@ class AdminDashboardHome(tk.Frame):
         stats_frame = tk.Frame(self, bg=COLOR_BACKGROUND)
         stats_frame.pack(fill="x", pady=10)
         
-        self.card_users = self.create_stat_card(stats_frame, "Registered Users", "0", COLOR_PRIMARY)
-        self.card_products = self.create_stat_card(stats_frame, "Active SKUs", "0", COLOR_SUCCESS)
-        self.card_orders = self.create_stat_card(stats_frame, "Total Orders", "0", COLOR_WARNING)
-        self.card_revenue = self.create_stat_card(stats_frame, "Total Sales", "$0.00", "#8b5cf6")
+        self.card_users = self.create_stat_card(stats_frame, "Registered Users", "0", COLOR_PRIMARY, "👥")
+        self.card_products = self.create_stat_card(stats_frame, "Active SKUs", "0", COLOR_SUCCESS, "📦")
+        self.card_orders = self.create_stat_card(stats_frame, "Total Orders", "0", COLOR_WARNING, "🛒")
+        self.card_revenue = self.create_stat_card(stats_frame, "Total Sales", "$0.00", "#8b5cf6", "💰")
         
         # Charts Area
         self.charts_frame = tk.Frame(self, bg=COLOR_BACKGROUND)
@@ -775,19 +825,21 @@ class AdminDashboardHome(tk.Frame):
         # Load Statistics
         self.load_statistics()
 
-    def create_stat_card(self, parent, label, value, color):
-        card = tk.Frame(parent, bg=COLOR_CARD_BG, highlightbackground=COLOR_BORDER, highlightthickness=1, width=170, height=100)
-        card.pack(side="left", padx=10, fill="both", expand=True)
-        card.pack_propagate(False)
+    def create_stat_card(self, parent, label, value, color, icon):
+        card = tk.Frame(parent, bg=COLOR_CARD_BG, highlightbackground=COLOR_BORDER, highlightthickness=1, pady=12, padx=15)
+        card.pack(side="left", padx=8, fill="both", expand=True)
         
-        line = tk.Frame(card, bg=color, height=4)
-        line.pack(fill="x", side="top")
+        card.grid_columnconfigure(0, weight=1)
+        card.grid_columnconfigure(1, weight=0)
         
-        lbl_val = tk.Label(card, text=value, font=("Segoe UI", 18, "bold"), fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_val.pack(expand=True, pady=(10, 0))
+        lbl_lbl = tk.Label(card, text=label.upper(), font=("Segoe UI", 8, "bold"), fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
+        lbl_lbl.grid(row=0, column=0, sticky="w")
         
-        lbl_lbl = tk.Label(card, text=label, font=FONT_SMALL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
-        lbl_lbl.pack(side="bottom", pady=(0, 10))
+        lbl_icon = tk.Label(card, text=icon, font=("Segoe UI", 16), fg=color, bg="#f1f5f9", width=3, height=1)
+        lbl_icon.grid(row=0, column=1, rowspan=2, sticky="e", padx=(10, 0))
+        
+        lbl_val = tk.Label(card, text=value, font=("Segoe UI", 20, "bold"), fg=COLOR_TEXT, bg=COLOR_CARD_BG)
+        lbl_val.grid(row=1, column=0, sticky="w", pady=(4, 0))
         
         return lbl_val
 
