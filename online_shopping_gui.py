@@ -1606,7 +1606,7 @@ class AdminOrdersView(tk.Frame):
         tree_container.pack(side="left", fill="both", expand=True, padx=(0, 15))
         
         # Status Color mapping configuration
-        self.tree = ttk.Treeview(tree_container, columns=("id", "uid", "uname", "total", "status", "location", "phone"), show="headings")
+        self.tree = ttk.Treeview(tree_container, columns=("id", "uid", "uname", "total", "status", "location", "phone", "date"), show="headings")
         self.tree.heading("id", text="Order ID")
         self.tree.heading("uid", text="User ID")
         self.tree.heading("uname", text="Customer Name")
@@ -1614,14 +1614,16 @@ class AdminOrdersView(tk.Frame):
         self.tree.heading("status", text="Order Status")
         self.tree.heading("location", text="Delivery Location")
         self.tree.heading("phone", text="Phone Number")
+        self.tree.heading("date", text="Order Date")
         
-        self.tree.column("id", width=80, anchor="center")
-        self.tree.column("uid", width=80, anchor="center")
-        self.tree.column("uname", width=160, anchor="w")
-        self.tree.column("total", width=90, anchor="e")
-        self.tree.column("status", width=90, anchor="center")
-        self.tree.column("location", width=180, anchor="w")
-        self.tree.column("phone", width=110, anchor="center")
+        self.tree.column("id", width=70, anchor="center")
+        self.tree.column("uid", width=70, anchor="center")
+        self.tree.column("uname", width=140, anchor="w")
+        self.tree.column("total", width=80, anchor="e")
+        self.tree.column("status", width=80, anchor="center")
+        self.tree.column("location", width=160, anchor="w")
+        self.tree.column("phone", width=100, anchor="center")
+        self.tree.column("date", width=120, anchor="center")
         
         # Tree tags for status coloration
         self.tree.tag_configure('Pending', foreground=COLOR_WARNING, font=FONT_BOLD)
@@ -1682,13 +1684,13 @@ class AdminOrdersView(tk.Frame):
             conn = get_db_connection()
             with conn.cursor() as cursor:
                 cursor.execute("""
-                    SELECT o.order_id, o.user_id, u.name, o.total_amount, o.status, o.shipping_address, o.customer_phone 
+                    SELECT o.order_id, o.user_id, u.name, o.total_amount, o.status, o.shipping_address, o.customer_phone, TO_CHAR(o.order_date, 'YYYY-MM-DD HH24:MI') 
                     FROM orders o 
                     JOIN users u ON o.user_id = u.user_id 
                     ORDER BY o.order_id DESC
                 """)
                 for row in cursor.fetchall():
-                    self.tree.insert("", "end", values=(row[0], row[1], row[2], f"${row[3]:.2f}", row[4], row[5] or "No address", row[6] or "No phone"), tags=(row[4],))
+                    self.tree.insert("", "end", values=(row[0], row[1], row[2], f"${row[3]:.2f}", row[4], row[5] or "No address", row[6] or "No phone", row[7]), tags=(row[4],))
             conn.close()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to retrieve orders: {e}")
@@ -1760,20 +1762,22 @@ class AdminPaymentsView(tk.Frame):
         tree_container = tk.Frame(self, bg=COLOR_CARD_BG, highlightbackground=COLOR_BORDER, highlightthickness=1)
         tree_container.pack(fill="both", expand=True)
         
-        self.tree = ttk.Treeview(tree_container, columns=("id", "oid", "amt", "uname", "location", "phone"), show="headings")
+        self.tree = ttk.Treeview(tree_container, columns=("id", "oid", "amt", "uname", "location", "phone", "date"), show="headings")
         self.tree.heading("id", text="Payment ID")
         self.tree.heading("oid", text="Order Reference ID")
         self.tree.heading("amt", text="Amount Paid")
         self.tree.heading("uname", text="Client Name")
         self.tree.heading("location", text="Shipping Location")
         self.tree.heading("phone", text="Customer Phone")
+        self.tree.heading("date", text="Order Date")
         
-        self.tree.column("id", width=100, anchor="center")
-        self.tree.column("oid", width=110, anchor="center")
-        self.tree.column("amt", width=110, anchor="e")
-        self.tree.column("uname", width=170, anchor="w")
-        self.tree.column("location", width=220, anchor="w")
-        self.tree.column("phone", width=110, anchor="center")
+        self.tree.column("id", width=90, anchor="center")
+        self.tree.column("oid", width=100, anchor="center")
+        self.tree.column("amt", width=100, anchor="e")
+        self.tree.column("uname", width=150, anchor="w")
+        self.tree.column("location", width=200, anchor="w")
+        self.tree.column("phone", width=100, anchor="center")
+        self.tree.column("date", width=120, anchor="center")
         
         sb = ttk.Scrollbar(tree_container, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=sb.set)
@@ -1791,14 +1795,14 @@ class AdminPaymentsView(tk.Frame):
             conn = get_db_connection()
             with conn.cursor() as cursor:
                 cursor.execute("""
-                    SELECT p.payment_id, p.order_id, p.amount, u.name, o.shipping_address, o.customer_phone 
+                    SELECT p.payment_id, p.order_id, p.amount, u.name, o.shipping_address, o.customer_phone, TO_CHAR(o.order_date, 'YYYY-MM-DD HH24:MI') 
                     FROM payments p 
                     JOIN orders o ON p.order_id = o.order_id 
                     JOIN users u ON o.user_id = u.user_id 
                     ORDER BY p.payment_id DESC
                 """)
                 for row in cursor.fetchall():
-                    self.tree.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}", row[3], row[4] or "No address", row[5] or "No phone"))
+                    self.tree.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}", row[3], row[4] or "No address", row[5] or "No phone", row[6]))
             conn.close()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to retrieve payments: {e}")
@@ -3009,14 +3013,16 @@ class CustomerOrdersView(tk.Frame):
         master_frame = tk.LabelFrame(paned, text="Orders History", font=FONT_BOLD, fg=COLOR_SECONDARY, bg=COLOR_CARD_BG, borderwidth=1, relief="solid")
         paned.add(master_frame, height=200)
         
-        self.tree_orders = ttk.Treeview(master_frame, columns=("id", "amt", "status"), show="headings")
+        self.tree_orders = ttk.Treeview(master_frame, columns=("id", "amt", "status", "date"), show="headings")
         self.tree_orders.heading("id", text="Order ID")
         self.tree_orders.heading("amt", text="Total Price Charged")
         self.tree_orders.heading("status", text="Order Status")
+        self.tree_orders.heading("date", text="Order Date")
         
         self.tree_orders.column("id", width=100, anchor="center")
-        self.tree_orders.column("amt", width=180, anchor="e")
-        self.tree_orders.column("status", width=180, anchor="center")
+        self.tree_orders.column("amt", width=150, anchor="e")
+        self.tree_orders.column("status", width=150, anchor="center")
+        self.tree_orders.column("date", width=150, anchor="center")
         
         self.tree_orders.tag_configure('Pending', foreground=COLOR_WARNING, font=FONT_BOLD)
         self.tree_orders.tag_configure('Completed', foreground=COLOR_SUCCESS, font=FONT_BOLD)
@@ -3062,14 +3068,16 @@ class CustomerOrdersView(tk.Frame):
         tree_container_pay = tk.Frame(self.tab_payments, bg=COLOR_CARD_BG, highlightbackground=COLOR_BORDER, highlightthickness=1)
         tree_container_pay.pack(fill="both", expand=True, pady=10)
         
-        self.tree_payments = ttk.Treeview(tree_container_pay, columns=("pay_id", "order_id", "amount"), show="headings")
+        self.tree_payments = ttk.Treeview(tree_container_pay, columns=("pay_id", "order_id", "amount", "date"), show="headings")
         self.tree_payments.heading("pay_id", text="Receipt Payment ID")
         self.tree_payments.heading("order_id", text="Order Reference ID")
         self.tree_payments.heading("amount", text="Paid Amount")
+        self.tree_payments.heading("date", text="Order Date")
         
-        self.tree_payments.column("pay_id", width=150, anchor="center")
-        self.tree_payments.column("order_id", width=150, anchor="center")
-        self.tree_payments.column("amount", width=200, anchor="e")
+        self.tree_payments.column("pay_id", width=120, anchor="center")
+        self.tree_payments.column("order_id", width=120, anchor="center")
+        self.tree_payments.column("amount", width=150, anchor="e")
+        self.tree_payments.column("date", width=150, anchor="center")
         
         sb_pay = ttk.Scrollbar(tree_container_pay, orient="vertical", command=self.tree_payments.yview)
         self.tree_payments.configure(yscrollcommand=sb_pay.set)
@@ -3095,24 +3103,24 @@ class CustomerOrdersView(tk.Frame):
             with conn.cursor() as cursor:
                 # Retrieve client orders
                 cursor.execute("""
-                    SELECT order_id, total_amount, status 
+                    SELECT order_id, total_amount, status, TO_CHAR(order_date, 'YYYY-MM-DD HH24:MI') 
                     FROM orders 
                     WHERE user_id = :user_id 
                     ORDER BY order_id DESC
                 """, {"user_id": user_id})
                 for row in cursor.fetchall():
-                    self.tree_orders.insert("", "end", values=(row[0], f"${row[1]:.2f}", row[2]), tags=(row[2],))
+                    self.tree_orders.insert("", "end", values=(row[0], f"${row[1]:.2f}", row[2], row[3]), tags=(row[2],))
                     
                 # Retrieve client payments
                 cursor.execute("""
-                    SELECT p.payment_id, p.order_id, p.amount 
+                    SELECT p.payment_id, p.order_id, p.amount, TO_CHAR(o.order_date, 'YYYY-MM-DD HH24:MI') 
                     FROM payments p 
                     JOIN orders o ON p.order_id = o.order_id 
                     WHERE o.user_id = :user_id
                     ORDER BY p.payment_id DESC
                 """, {"user_id": user_id})
                 for row in cursor.fetchall():
-                    self.tree_payments.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}"))
+                    self.tree_payments.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}", row[3]))
             conn.close()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to retrieve purchase history: {e}")
