@@ -2024,18 +2024,36 @@ class AdminUsersView(tk.Frame):
         try:
             conn = get_db_connection()
             with conn.cursor() as cursor:
-                cursor.execute("DELETE FROM users WHERE user_id = :id", {"id": user_id})
+                # 1. Fetch all orders belonging to this user
+                cursor.execute("SELECT order_id FROM orders WHERE user_id = :uid", {"uid": int(user_id)})
+                order_ids = [row[0] for row in cursor.fetchall()]
+                
+                # 2. Delete child records for each order
+                for oid in order_ids:
+                    cursor.execute("DELETE FROM order_audit_logs WHERE order_id = :oid", {"oid": oid})
+                    cursor.execute("DELETE FROM payments WHERE order_id = :oid", {"oid": oid})
+                    cursor.execute("DELETE FROM order_items WHERE order_id = :oid", {"oid": oid})
+                
+                # 3. Delete parent orders
+                if order_ids:
+                    cursor.execute("DELETE FROM orders WHERE user_id = :uid", {"uid": int(user_id)})
+                
+                # 4. Fetch and delete cart and cart items
+                cursor.execute("SELECT cart_id FROM cart WHERE user_id = :uid", {"uid": int(user_id)})
+                cart_row = cursor.fetchone()
+                if cart_row:
+                    cart_id = cart_row[0]
+                    cursor.execute("DELETE FROM cart_items WHERE cart_id = :cid", {"cid": cart_id})
+                    cursor.execute("DELETE FROM cart WHERE user_id = :uid", {"uid": int(user_id)})
+                
+                # 5. Finally delete the user record itself
+                cursor.execute("DELETE FROM users WHERE user_id = :uid", {"uid": int(user_id)})
                 conn.commit()
             conn.close()
-            messagebox.showinfo("Success", "User account removed.")
+            messagebox.showinfo("Success", f"User account '{name}' and all associated transactions successfully deleted.")
             self.load_data()
         except Exception as e:
-            err_str = str(e)
-            if "ORA-02292" in err_str:
-                messagebox.showerror("Integrity Error", 
-                    f"Could not delete user account '{name}':\nThis account is linked to existing order history or transactions in the system and cannot be deleted.")
-            else:
-                messagebox.showerror("Database Error", f"Could not delete user account:\n{e}")
+            messagebox.showerror("Database Error", f"Could not delete user account:\n{e}")
 
     def search_users(self):
         term = self.entry_search.get().strip().lower()
