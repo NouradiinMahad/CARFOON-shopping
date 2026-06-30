@@ -1606,20 +1606,22 @@ class AdminOrdersView(tk.Frame):
         tree_container.pack(side="left", fill="both", expand=True, padx=(0, 15))
         
         # Status Color mapping configuration
-        self.tree = ttk.Treeview(tree_container, columns=("id", "uid", "uname", "total", "status", "location"), show="headings")
+        self.tree = ttk.Treeview(tree_container, columns=("id", "uid", "uname", "total", "status", "location", "phone"), show="headings")
         self.tree.heading("id", text="Order ID")
         self.tree.heading("uid", text="User ID")
         self.tree.heading("uname", text="Customer Name")
         self.tree.heading("total", text="Total Invoice")
         self.tree.heading("status", text="Order Status")
         self.tree.heading("location", text="Delivery Location")
+        self.tree.heading("phone", text="Phone Number")
         
         self.tree.column("id", width=80, anchor="center")
         self.tree.column("uid", width=80, anchor="center")
-        self.tree.column("uname", width=180, anchor="w")
-        self.tree.column("total", width=100, anchor="e")
-        self.tree.column("status", width=100, anchor="center")
-        self.tree.column("location", width=220, anchor="w")
+        self.tree.column("uname", width=160, anchor="w")
+        self.tree.column("total", width=90, anchor="e")
+        self.tree.column("status", width=90, anchor="center")
+        self.tree.column("location", width=180, anchor="w")
+        self.tree.column("phone", width=110, anchor="center")
         
         # Tree tags for status coloration
         self.tree.tag_configure('Pending', foreground=COLOR_WARNING, font=FONT_BOLD)
@@ -1650,7 +1652,13 @@ class AdminOrdersView(tk.Frame):
         lbl_addr_title = tk.Label(form_frame, text="Shipping Location:", font=FONT_NORMAL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
         lbl_addr_title.pack(anchor="w", pady=(5, 2))
         self.lbl_address = tk.Label(form_frame, text="None Selected", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG, justify="left", wraplength=230)
-        self.lbl_address.pack(anchor="w", pady=(0, 15))
+        self.lbl_address.pack(anchor="w", pady=(0, 10))
+        
+        # Phone Number Label
+        lbl_phone_title = tk.Label(form_frame, text="Customer Phone:", font=FONT_NORMAL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
+        lbl_phone_title.pack(anchor="w", pady=(5, 2))
+        self.lbl_phone = tk.Label(form_frame, text="None Selected", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
+        self.lbl_phone.pack(anchor="w", pady=(0, 15))
         
         lbl_status = tk.Label(form_frame, text="Set Order Status *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
         lbl_status.pack(anchor="w", pady=(5, 2))
@@ -1674,13 +1682,13 @@ class AdminOrdersView(tk.Frame):
             conn = get_db_connection()
             with conn.cursor() as cursor:
                 cursor.execute("""
-                    SELECT o.order_id, o.user_id, u.name, o.total_amount, o.status, o.shipping_address 
+                    SELECT o.order_id, o.user_id, u.name, o.total_amount, o.status, o.shipping_address, o.customer_phone 
                     FROM orders o 
                     JOIN users u ON o.user_id = u.user_id 
                     ORDER BY o.order_id DESC
                 """)
                 for row in cursor.fetchall():
-                    self.tree.insert("", "end", values=(row[0], row[1], row[2], f"${row[3]:.2f}", row[4], row[5] or "No address"), tags=(row[4],))
+                    self.tree.insert("", "end", values=(row[0], row[1], row[2], f"${row[3]:.2f}", row[4], row[5] or "No address", row[6] or "No phone"), tags=(row[4],))
             conn.close()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to retrieve orders: {e}")
@@ -1693,14 +1701,16 @@ class AdminOrdersView(tk.Frame):
         self.lbl_selected_order.config(text=f"Order #{vals[0]} (Client: {vals[2]})")
         self.combobox_status.set(vals[4])
         
-        # Load shipping location dynamically
+        # Load shipping location and phone dynamically
         try:
             conn = get_db_connection()
             with conn.cursor() as cursor:
-                cursor.execute("SELECT shipping_address FROM orders WHERE order_id = :oid", {"oid": int(vals[0])})
+                cursor.execute("SELECT shipping_address, customer_phone FROM orders WHERE order_id = :oid", {"oid": int(vals[0])})
                 row = cursor.fetchone()
                 addr = row[0] if row and row[0] else "No address provided"
+                phone = row[1] if row and row[1] else "No phone provided"
                 self.lbl_address.config(text=addr)
+                self.lbl_phone.config(text=phone)
             conn.close()
         except Exception as e:
             print(f"Error loading order address: {e}")
@@ -1750,18 +1760,20 @@ class AdminPaymentsView(tk.Frame):
         tree_container = tk.Frame(self, bg=COLOR_CARD_BG, highlightbackground=COLOR_BORDER, highlightthickness=1)
         tree_container.pack(fill="both", expand=True)
         
-        self.tree = ttk.Treeview(tree_container, columns=("id", "oid", "amt", "uname", "location"), show="headings")
+        self.tree = ttk.Treeview(tree_container, columns=("id", "oid", "amt", "uname", "location", "phone"), show="headings")
         self.tree.heading("id", text="Payment ID")
         self.tree.heading("oid", text="Order Reference ID")
         self.tree.heading("amt", text="Amount Paid")
         self.tree.heading("uname", text="Client Name")
         self.tree.heading("location", text="Shipping Location")
+        self.tree.heading("phone", text="Customer Phone")
         
         self.tree.column("id", width=100, anchor="center")
-        self.tree.column("oid", width=120, anchor="center")
-        self.tree.column("amt", width=120, anchor="e")
-        self.tree.column("uname", width=200, anchor="w")
-        self.tree.column("location", width=250, anchor="w")
+        self.tree.column("oid", width=110, anchor="center")
+        self.tree.column("amt", width=110, anchor="e")
+        self.tree.column("uname", width=170, anchor="w")
+        self.tree.column("location", width=220, anchor="w")
+        self.tree.column("phone", width=110, anchor="center")
         
         sb = ttk.Scrollbar(tree_container, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=sb.set)
@@ -1779,14 +1791,14 @@ class AdminPaymentsView(tk.Frame):
             conn = get_db_connection()
             with conn.cursor() as cursor:
                 cursor.execute("""
-                    SELECT p.payment_id, p.order_id, p.amount, u.name, o.shipping_address 
+                    SELECT p.payment_id, p.order_id, p.amount, u.name, o.shipping_address, o.customer_phone 
                     FROM payments p 
                     JOIN orders o ON p.order_id = o.order_id 
                     JOIN users u ON o.user_id = u.user_id 
                     ORDER BY p.payment_id DESC
                 """)
                 for row in cursor.fetchall():
-                    self.tree.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}", row[3], row[4] or "No address"))
+                    self.tree.insert("", "end", values=(row[0], row[1], f"${row[2]:.2f}", row[3], row[4] or "No address", row[5] or "No phone"))
             conn.close()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to retrieve payments: {e}")
@@ -2767,9 +2779,15 @@ class CustomerCartView(tk.Frame):
         
         # Delivery Location Entry
         lbl_loc = tk.Label(checkout_frame, text="Delivery Location / Address *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_loc.pack(anchor="w", pady=(10, 2))
+        lbl_loc.pack(anchor="w", pady=(5, 2))
         self.entry_location = tk.Entry(checkout_frame, font=FONT_NORMAL, highlightthickness=1, highlightbackground=COLOR_BORDER, bd=0)
-        self.entry_location.pack(fill="x", ipady=4, pady=(0, 10))
+        self.entry_location.pack(fill="x", ipady=4, pady=(0, 5))
+        
+        # Customer Phone Number Entry
+        lbl_phone = tk.Label(checkout_frame, text="Customer Phone Number *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
+        lbl_phone.pack(anchor="w", pady=(5, 2))
+        self.entry_phone = tk.Entry(checkout_frame, font=FONT_NORMAL, highlightthickness=1, highlightbackground=COLOR_BORDER, bd=0)
+        self.entry_phone.pack(fill="x", ipady=4, pady=(0, 10))
         
         self.lbl_total = tk.Label(checkout_frame, text="Total: $0.00", font=("Segoe UI", 16, "bold"), fg=COLOR_PRIMARY, bg=COLOR_CARD_BG)
         self.lbl_total.pack(pady=5)
@@ -2909,8 +2927,12 @@ class CustomerCartView(tk.Frame):
                 pass
             
         shipping_addr = self.entry_location.get().strip()
+        customer_phone = self.entry_phone.get().strip()
         if not shipping_addr:
             messagebox.showwarning("Location Required", "Please enter your shipping/delivery location address in the input field before checking out.")
+            return
+        if not customer_phone:
+            messagebox.showwarning("Phone Required", "Please enter your customer phone number in the input field before checking out.")
             return
 
         try:
@@ -2933,9 +2955,9 @@ class CustomerCartView(tk.Frame):
                 cursor.execute("INSERT INTO payments (order_id, amount) VALUES (:order_id, :amount)", 
                                {"order_id": new_order_id, "amount": total_amount})
                 
-                # 4. Save the customer's delivery location address to the orders table
-                cursor.execute("UPDATE orders SET shipping_address = :addr WHERE order_id = :order_id", 
-                               {"addr": shipping_addr, "order_id": new_order_id})
+                # 4. Save the customer's delivery location address and phone number to the orders table
+                cursor.execute("UPDATE orders SET shipping_address = :addr, customer_phone = :phone WHERE order_id = :order_id", 
+                               {"addr": shipping_addr, "phone": customer_phone, "order_id": new_order_id})
                 
                 conn.commit()
             conn.close()
@@ -2943,8 +2965,9 @@ class CustomerCartView(tk.Frame):
             # Show the beautiful paper receipt window instead of standard messagebox
             show_receipt_window(self, new_order_id, total_amount, receipt_items)
             
-            # Clear selected tracking states, clear location entry, and reload cart
+            # Clear selected tracking states, clear location/phone entries, and reload cart
             self.entry_location.delete(0, tk.END)
+            self.entry_phone.delete(0, tk.END)
             self.selected_item_id = None
             self.lbl_selected_item.config(text="None Selected")
             self.load_data()

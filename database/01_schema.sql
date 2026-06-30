@@ -70,6 +70,7 @@ CREATE TABLE orders (
     total_amount     NUMBER(10,2) NOT NULL,
     status           VARCHAR2(30) DEFAULT 'Pending' NOT NULL,
     shipping_address VARCHAR2(300),
+    customer_phone   VARCHAR2(50),
     CONSTRAINT pk_orders PRIMARY KEY (order_id),
     CONSTRAINT fk_orders_users FOREIGN KEY (user_id) 
         REFERENCES users(user_id),
