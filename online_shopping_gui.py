@@ -2000,13 +2000,19 @@ class AdminUsersView(tk.Frame):
             messagebox.showerror("Error", f"Failed to retrieve users: {e}")
 
     def delete_user(self):
+        # Enforce Rule: Only the primary admin@gmail.com is allowed to delete users
+        logged_in_email = self.controller.app.current_user["email"]
+        if logged_in_email != "admin@gmail.com":
+            messagebox.showerror("Access Denied", "Only the primary administrator ('admin@gmail.com') is authorized to delete user accounts.")
+            return
+
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Selection Required", "Please select a user account to delete.")
             return
             
         vals = self.tree.item(selected[0], "values")
-        user_id, name = vals[0], vals[1]
+        user_id, name, email = vals[0], vals[1], vals[2]
         
         if int(user_id) == self.controller.app.current_user["user_id"]:
             messagebox.showerror("Action Denied", "You cannot delete your own active administrative session.")
@@ -2024,7 +2030,12 @@ class AdminUsersView(tk.Frame):
             messagebox.showinfo("Success", "User account removed.")
             self.load_data()
         except Exception as e:
-            messagebox.showerror("Database Error", f"Could not delete user account:\n{e}")
+            err_str = str(e)
+            if "ORA-02292" in err_str:
+                messagebox.showerror("Integrity Error", 
+                    f"Could not delete user account '{name}':\nThis account is linked to existing order history or transactions in the system and cannot be deleted.")
+            else:
+                messagebox.showerror("Database Error", f"Could not delete user account:\n{e}")
 
     def search_users(self):
         term = self.entry_search.get().strip().lower()
