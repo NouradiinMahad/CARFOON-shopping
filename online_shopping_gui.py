@@ -1619,6 +1619,7 @@ class AdminOrdersView(tk.Frame):
         self.tree.tag_configure('Completed', foreground=COLOR_SUCCESS, font=FONT_BOLD)
         self.tree.tag_configure('Cancelled', foreground=COLOR_DANGER, font=FONT_BOLD)
         self.tree.tag_configure('Shipped', foreground=COLOR_PRIMARY, font=FONT_BOLD)
+        self.tree.tag_configure('Delivered', foreground="#a855f7", font=FONT_BOLD)
         
         sb = ttk.Scrollbar(tree_container, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=sb.set)
@@ -1636,18 +1637,24 @@ class AdminOrdersView(tk.Frame):
         lbl_order_id_lbl = tk.Label(form_frame, text="Selected Order:", font=FONT_NORMAL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
         lbl_order_id_lbl.pack(anchor="w", pady=(5, 2))
         self.lbl_selected_order = tk.Label(form_frame, text="None Selected", font=FONT_TITLE, fg=COLOR_PRIMARY, bg=COLOR_CARD_BG)
-        self.lbl_selected_order.pack(anchor="w", pady=(0, 15))
+        self.lbl_selected_order.pack(anchor="w", pady=(0, 10))
+        
+        # Shipping Location Label
+        lbl_addr_title = tk.Label(form_frame, text="Shipping Location:", font=FONT_NORMAL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG)
+        lbl_addr_title.pack(anchor="w", pady=(5, 2))
+        self.lbl_address = tk.Label(form_frame, text="None Selected", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG, justify="left", wraplength=230)
+        self.lbl_address.pack(anchor="w", pady=(0, 15))
         
         lbl_status = tk.Label(form_frame, text="Set Order Status *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
         lbl_status.pack(anchor="w", pady=(5, 2))
         
-        self.combobox_status = ttk.Combobox(form_frame, font=FONT_NORMAL, values=["Pending", "Completed", "Cancelled", "Shipped"], state="readonly")
+        self.combobox_status = ttk.Combobox(form_frame, font=FONT_NORMAL, values=["Pending", "Completed", "Cancelled", "Shipped", "Delivered"], state="readonly")
         self.combobox_status.pack(fill="x", ipady=3, pady=(0, 20))
         
         btn_update = ttk.Button(form_frame, text="💾 Update Status", command=self.update_order_status, style="TButton")
         btn_update.pack(fill="x", ipady=5)
         
-        lbl_trigger_note = tk.Label(form_frame, text="📝 Note: Changing order status will automatically fire the AFTER UPDATE database trigger, inserting history details into the Audit Log table.", font=FONT_SMALL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG, justify="left", wraplength=230)
+        lbl_trigger_note = tk.Label(form_frame, text="📝 Note: Changing status updates the tracking ledger and logs history into the Audit Log table.", font=FONT_SMALL, fg=COLOR_TEXT_LIGHT, bg=COLOR_CARD_BG, justify="left", wraplength=230)
         lbl_trigger_note.pack(side="bottom", pady=10)
         
         self.load_data()
@@ -1678,6 +1685,18 @@ class AdminOrdersView(tk.Frame):
         vals = self.tree.item(selected[0], "values")
         self.lbl_selected_order.config(text=f"Order #{vals[0]} (Client: {vals[2]})")
         self.combobox_status.set(vals[4])
+        
+        # Load shipping location dynamically
+        try:
+            conn = get_db_connection()
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT shipping_address FROM orders WHERE order_id = :oid", {"oid": int(vals[0])})
+                row = cursor.fetchone()
+                addr = row[0] if row and row[0] else "No address provided"
+                self.lbl_address.config(text=addr)
+            conn.close()
+        except Exception as e:
+            print(f"Error loading order address: {e}")
 
     def update_order_status(self):
         selected = self.tree.selection()
@@ -2874,6 +2893,13 @@ class CustomerCartView(tk.Frame):
             except Exception:
                 pass
             
+        import tkinter.simpledialog as sd
+        shipping_addr = sd.askstring("Delivery Address", "Please enter your shipping/delivery location address:")
+        if not shipping_addr or not shipping_addr.strip():
+            messagebox.showwarning("Address Required", "You must provide a delivery address to place an order.")
+            return
+        shipping_addr = shipping_addr.strip()
+
         try:
             conn = get_db_connection()
             with conn.cursor() as cursor:
@@ -2893,6 +2919,10 @@ class CustomerCartView(tk.Frame):
                 # 3. Create simulated payment settlements matching server.py checkout logic
                 cursor.execute("INSERT INTO payments (order_id, amount) VALUES (:order_id, :amount)", 
                                {"order_id": new_order_id, "amount": total_amount})
+                
+                # 4. Save the customer's delivery location address to the orders table
+                cursor.execute("UPDATE orders SET shipping_address = :addr WHERE order_id = :order_id", 
+                               {"addr": shipping_addr, "order_id": new_order_id})
                 
                 conn.commit()
             conn.close()
@@ -2955,6 +2985,7 @@ class CustomerOrdersView(tk.Frame):
         self.tree_orders.tag_configure('Completed', foreground=COLOR_SUCCESS, font=FONT_BOLD)
         self.tree_orders.tag_configure('Cancelled', foreground=COLOR_DANGER, font=FONT_BOLD)
         self.tree_orders.tag_configure('Shipped', foreground=COLOR_PRIMARY, font=FONT_BOLD)
+        self.tree_orders.tag_configure('Delivered', foreground="#a855f7", font=FONT_BOLD)
         
         sb_mo = ttk.Scrollbar(master_frame, orient="vertical", command=self.tree_orders.yview)
         self.tree_orders.configure(yscrollcommand=sb_mo.set)
