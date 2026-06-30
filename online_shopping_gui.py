@@ -1049,31 +1049,31 @@ class AdminProductsView(tk.Frame):
         self.tree.bind("<<TreeviewSelect>>", self.on_select_item)
         
         # CRUD Form panel on right
-        form_frame = tk.LabelFrame(body_frame, text="Product Details Form", font=FONT_BOLD, fg=COLOR_SECONDARY, bg=COLOR_CARD_BG, padx=15, pady=15, borderwidth=1, relief="solid", width=280)
+        form_frame = tk.LabelFrame(body_frame, text="Product Details Form", font=FONT_BOLD, fg=COLOR_SECONDARY, bg=COLOR_CARD_BG, padx=15, pady=10, borderwidth=1, relief="solid", width=280)
         form_frame.pack(side="right", fill="y")
         form_frame.pack_propagate(False)
         
         lbl_pname = tk.Label(form_frame, text="Product Name *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_pname.pack(anchor="w", pady=(5, 2))
+        lbl_pname.pack(anchor="w", pady=(2, 1))
         self.entry_name = tk.Entry(form_frame, font=FONT_NORMAL, highlightthickness=1, highlightbackground=COLOR_BORDER, bd=0)
-        self.entry_name.pack(fill="x", ipady=5, pady=(0, 10))
+        self.entry_name.pack(fill="x", ipady=4, pady=(0, 6))
         
         lbl_price = tk.Label(form_frame, text="Price ($) *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_price.pack(anchor="w", pady=(5, 2))
+        lbl_price.pack(anchor="w", pady=(2, 1))
         self.entry_price = tk.Entry(form_frame, font=FONT_NORMAL, highlightthickness=1, highlightbackground=COLOR_BORDER, bd=0)
-        self.entry_price.pack(fill="x", ipady=5, pady=(0, 10))
+        self.entry_price.pack(fill="x", ipady=4, pady=(0, 6))
         
         lbl_cat = tk.Label(form_frame, text="Category Name", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_cat.pack(anchor="w", pady=(5, 2))
+        lbl_cat.pack(anchor="w", pady=(2, 1))
         self.combobox_cat = ttk.Combobox(form_frame, font=FONT_NORMAL, state="readonly")
-        self.combobox_cat.pack(fill="x", ipady=3, pady=(0, 10))
+        self.combobox_cat.pack(fill="x", ipady=3, pady=(0, 8))
         
         # Image Upload
         lbl_img = tk.Label(form_frame, text="Product Image", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
-        lbl_img.pack(anchor="w", pady=(5, 2))
+        lbl_img.pack(anchor="w", pady=(2, 1))
         
         img_frame = tk.Frame(form_frame, bg=COLOR_CARD_BG)
-        img_frame.pack(fill="x", pady=(0, 15))
+        img_frame.pack(fill="x", pady=(0, 10))
         
         self.btn_select_image = ttk.Button(img_frame, text="Select Image", command=self.select_image)
         self.btn_select_image.pack(side="left", padx=(0, 10))
@@ -1083,9 +1083,9 @@ class AdminProductsView(tk.Frame):
         
         self.selected_image_path = None
         
-        # Image Preview Container Frame to ensure a fixed layout box
-        self.preview_container = tk.Frame(form_frame, bg=COLOR_CARD_BG, width=240, height=160, highlightbackground=COLOR_BORDER, highlightthickness=1)
-        self.preview_container.pack(pady=(0, 10))
+        # Image Preview Container Frame (height reduced to 100 to show the delete button cleanly)
+        self.preview_container = tk.Frame(form_frame, bg=COLOR_CARD_BG, width=240, height=100, highlightbackground=COLOR_BORDER, highlightthickness=1)
+        self.preview_container.pack(pady=(0, 8))
         self.preview_container.pack_propagate(False)
         
         self.lbl_preview = tk.Label(self.preview_container, bg=COLOR_CARD_BG, text="[ Image Preview ]", font=FONT_SMALL, fg=COLOR_TEXT_LIGHT)
@@ -1095,13 +1095,13 @@ class AdminProductsView(tk.Frame):
         
         # Control Buttons
         btn_add = ttk.Button(form_frame, text="➕ Add Product", command=self.add_product, style="Success.TButton")
-        btn_add.pack(fill="x", ipady=4, pady=5)
+        btn_add.pack(fill="x", ipady=3, pady=3)
         
         btn_update = ttk.Button(form_frame, text="📝 Update Details", command=self.update_product, style="TButton")
-        btn_update.pack(fill="x", ipady=4, pady=5)
+        btn_update.pack(fill="x", ipady=3, pady=3)
         
         btn_delete = ttk.Button(form_frame, text="🗑️ Delete Item", command=self.delete_product, style="Danger.TButton")
-        btn_delete.pack(fill="x", ipady=4, pady=5)
+        btn_delete.pack(fill="x", ipady=3, pady=3)
         
         # Store categories list mapping
         self.categories_map = {} # Name -> ID
@@ -1398,7 +1398,12 @@ class AdminProductsView(tk.Frame):
             messagebox.showinfo("Success", "Product successfully removed from catalog.")
             self.load_data()
         except Exception as e:
-            messagebox.showerror("Database Error", f"Could not delete product:\n{e}")
+            err_str = str(e)
+            if "ORA-02292" in err_str:
+                messagebox.showerror("Integrity Error", 
+                    f"Could not delete product '{name}':\nThis product is linked to existing customer order history and cannot be deleted to preserve sales records.")
+            else:
+                messagebox.showerror("Database Error", f"Could not delete product:\n{e}")
 
     def search_products(self):
         term = self.entry_search.get().strip().lower()
