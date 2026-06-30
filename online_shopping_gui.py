@@ -2756,8 +2756,14 @@ class CustomerCartView(tk.Frame):
         totals_frame.grid_columnconfigure(0, weight=1)
         totals_frame.grid_columnconfigure(1, weight=1)
         
+        # Delivery Location Entry
+        lbl_loc = tk.Label(checkout_frame, text="Delivery Location / Address *", font=FONT_BOLD, fg=COLOR_TEXT, bg=COLOR_CARD_BG)
+        lbl_loc.pack(anchor="w", pady=(10, 2))
+        self.entry_location = tk.Entry(checkout_frame, font=FONT_NORMAL, highlightthickness=1, highlightbackground=COLOR_BORDER, bd=0)
+        self.entry_location.pack(fill="x", ipady=4, pady=(0, 10))
+        
         self.lbl_total = tk.Label(checkout_frame, text="Total: $0.00", font=("Segoe UI", 16, "bold"), fg=COLOR_PRIMARY, bg=COLOR_CARD_BG)
-        self.lbl_total.pack(pady=10)
+        self.lbl_total.pack(pady=5)
         
         btn_checkout = ttk.Button(checkout_frame, text="🚀 Checkout Now", command=self.checkout_cart, style="Success.TButton")
         btn_checkout.pack(fill="x", ipady=6, pady=5)
@@ -2893,12 +2899,10 @@ class CustomerCartView(tk.Frame):
             except Exception:
                 pass
             
-        import tkinter.simpledialog as sd
-        shipping_addr = sd.askstring("Delivery Address", "Please enter your shipping/delivery location address:")
-        if not shipping_addr or not shipping_addr.strip():
-            messagebox.showwarning("Address Required", "You must provide a delivery address to place an order.")
+        shipping_addr = self.entry_location.get().strip()
+        if not shipping_addr:
+            messagebox.showwarning("Location Required", "Please enter your shipping/delivery location address in the input field before checking out.")
             return
-        shipping_addr = shipping_addr.strip()
 
         try:
             conn = get_db_connection()
@@ -2930,7 +2934,8 @@ class CustomerCartView(tk.Frame):
             # Show the beautiful paper receipt window instead of standard messagebox
             show_receipt_window(self, new_order_id, total_amount, receipt_items)
             
-            # Clear selected tracking states and reload cart
+            # Clear selected tracking states, clear location entry, and reload cart
+            self.entry_location.delete(0, tk.END)
             self.selected_item_id = None
             self.lbl_selected_item.config(text="None Selected")
             self.load_data()
