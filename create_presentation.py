@@ -292,7 +292,7 @@ tf.word_wrap = True
 
 points = [
     ("Assign System Roles", "Only the primary administrator ('admin@gmail.com') is authorized to update roles. The primary 'admin@gmail.com' role itself is locked and non-editable."),
-    ("User Details Editor", "Allows admins to update customer profiles (Full Name, Email Address, and Hashed Password) via sidebar entries."),
+    ("User Details & Deletion", "Allows profile updates. Only 'admin@gmail.com' can delete accounts, with active ORA-02292 integrity constraint checks to handle order links gracefully."),
     ("Branded & Web-like UI", "Integrates custom circular brand logos in the login and sidebar, features responsive hover animations, and organizes KPIs in grid cards with colored icon badges."),
     ("Security Standards", "Enforces authentication checks. Default testing credentials are deleted so entry boxes load blank, requiring manual logins.")
 ]
